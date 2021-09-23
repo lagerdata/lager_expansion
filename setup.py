@@ -1,7 +1,7 @@
 import os
 import setuptools
 
-from lager_expansion import __version__ as lager_version
+lager_version = '0.0.1'
 
 def readme():
     path = os.path.dirname(__file__)
@@ -29,7 +29,7 @@ if __name__ == "__main__":
         description=description,
         long_description=readme(),
         classifiers=classifiers,
-        url='https://github.com/lagerdata/lager_fixture',
+        url='https://github.com/lagerdata/lager_expansion',
         author=author,
         author_email=email,
         maintainer=author,
@@ -38,7 +38,6 @@ if __name__ == "__main__":
         python_requires=">=3.6",
         packages=setuptools.find_packages(),
         install_requires='''
-            pyserial==3.4,
             hidapi==0.10.1
         ''',
         entry_points={
