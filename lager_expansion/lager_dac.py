@@ -2,8 +2,6 @@ from ft260 import FT260
 from lager_adc import LagerADC
 from dac80501 import DAC80501
 
-
-
 class LagerDAC:
     def __init__(self):
         self.dev = FT260()
