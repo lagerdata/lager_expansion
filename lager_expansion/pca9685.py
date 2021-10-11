@@ -1,6 +1,6 @@
 import time
 from enum import Enum
-from ft260 import Flags
+from .ft260 import Flags
 
 PCA9685_MODE1 = 0x00
 PCA9685_MODE2 = 0x01

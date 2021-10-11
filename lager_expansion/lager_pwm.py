@@ -1,5 +1,5 @@
-from ft260 import FT260
-from pca9685 import PCA9685, OutputModes
+from .ft260 import FT260
+from .pca9685 import PCA9685, OutputModes
 
 ADDR = 0x40
 

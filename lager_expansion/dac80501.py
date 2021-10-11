@@ -1,5 +1,5 @@
 import time
-from ft260 import Flags
+from .ft260 import Flags
 
 DAC_REG_DEVID = 0x01
 DAC_REG_SYNC = 0x02
