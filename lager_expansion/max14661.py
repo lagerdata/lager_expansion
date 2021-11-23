@@ -21,14 +21,21 @@ class MAX14661:
         pass
 
     def mux_a(self, channel):
-        if channel < 0 or channel > 15:
+        if channel <= 0 or channel > 15:
             channel = 0x10 # Disable all switches
-        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, channel])
+        else:
+            channel -= 1
+        
+        print(f"Writing to {hex(self.address)} {hex(MAX14661_CMD_A)} {hex(channel)}")
+        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, channel, 0x10])
 
     def mux_b(self, channel):
-        if channel < 0 or channel > 15:
+        if channel <= 0 or channel > 15:
             channel = 0x10 # Disable all switches
-        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_B, channel])
+        else:
+            channel -= 1
+        # print(f"Writing to {hex(self.address)} {hex(MAX14661_CMD_B)} {hex(channel)}")
+        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, 0x10, channel])
 
     def mux(self, common, channel):
         if common == 'A':
@@ -49,3 +56,13 @@ class MAX14661:
             return self.get_mux_a()
         elif common == 'B':
             return self.get_mux_b()
+
+    def test(self):
+
+        # self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_DIR0, 0x02])
+
+        dir0 = self.i2c.read(self.address, MAX14661_DIR0, 1)
+        dir1 = self.i2c.read(self.address, MAX14661_DIR1, 1)
+        dir2 = self.i2c.read(self.address, MAX14661_DIR2, 1)
+        dir3 = self.i2c.read(self.address, MAX14661_DIR3, 1)
+        print(f"DIR0: {hex(dir0[0])} DIR1: {hex(dir1[0])} DIR2: {hex(dir2[0])} DIR3: {hex(dir3[0])}")
