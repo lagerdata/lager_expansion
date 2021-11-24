@@ -16,6 +16,16 @@ class LagerMultiplexer:
         for addr in ADDRS:
             multiplexers.append(MAX14661(self.i2c, addr))
 
+    def validate_mux(self, inp, out):
+        inp = int(inp)
+        if inp < 0 or inp > 15:
+            raise ValueError
+
+        if out.upper() not in CHANNELS.keys():
+            raise ValueError
+
+        return inp, out
+
     def mux(self, common, channel):
         mult, mult_common = CHANNELS[common]
         print(f"Muxing input {channel} to output {common}")

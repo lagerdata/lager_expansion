@@ -17,6 +17,9 @@ class MAX14661:
         self.i2c = i2c
         self.address = address
 
+        self.mux_a_state = 0x10
+        self.mux_b_state = 0x10
+
     def begin(self):
         pass
 
@@ -27,7 +30,8 @@ class MAX14661:
             channel -= 1
         
         print(f"Writing to {hex(self.address)} {hex(MAX14661_CMD_A)} {hex(channel)}")
-        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, channel, 0x10])
+        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, channel, self.mux_b_state])
+        self.mux_a_state = channel
 
     def mux_b(self, channel):
         if channel <= 0 or channel > 15:
@@ -35,7 +39,8 @@ class MAX14661:
         else:
             channel -= 1
         # print(f"Writing to {hex(self.address)} {hex(MAX14661_CMD_B)} {hex(channel)}")
-        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, 0x10, channel])
+        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, self.mux_a_state, channel])
+        self.mux_b_state = channel
 
     def mux(self, common, channel):
         if common == 'A':
