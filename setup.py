@@ -38,7 +38,7 @@ if __name__ == "__main__":
         python_requires=">=3.6",
         packages=setuptools.find_packages(),
         install_requires='''
-            hidapi==0.10.1
+            hidapi==0.11.0.post2
         ''',
         entry_points={
             'console_scripts': [
