@@ -38,7 +38,7 @@ class MAX14661:
             channel = 0x10 # Disable all switches
         else:
             channel -= 1
-        # print(f"Writing to {hex(self.address)} {hex(MAX14661_CMD_B)} {hex(channel)}")
+        print(f"Writing to {hex(self.address)} {hex(MAX14661_CMD_B)} {hex(channel)}")
         self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, self.mux_a_state, channel])
         self.mux_b_state = channel
 
@@ -47,6 +47,9 @@ class MAX14661:
             self.mux_a(channel)
         elif common == 'B':
             self.mux_b(channel)
+
+    def clear(self):
+        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, 0x10, 0x10])
 
     def get_mux_a(self):
         mux_a = self.i2c.read(self.address, MAX14661_CMD_A, 1)
