@@ -15,7 +15,7 @@ class LagerMultiplexer:
 
     def validate_mux(self, inp, out):
         inp = int(inp)
-        if inp < 0 or inp > 15:
+        if inp < 1 or inp > 16:
             raise ValueError
 
         if out.upper() not in CHANNELS.keys():

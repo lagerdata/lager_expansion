@@ -24,7 +24,7 @@ class MAX14661:
         pass
 
     def mux_a(self, channel):
-        if channel <= 0 or channel > 15:
+        if channel <= 0 or channel > 16:
             channel = 0x10 # Disable all switches
         else:
             channel -= 1
@@ -34,7 +34,7 @@ class MAX14661:
         self.mux_a_state = channel
 
     def mux_b(self, channel):
-        if channel <= 0 or channel > 15:
+        if channel <= 0 or channel > 16:
             channel = 0x10 # Disable all switches
         else:
             channel -= 1
