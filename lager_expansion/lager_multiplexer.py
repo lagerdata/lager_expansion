@@ -26,9 +26,12 @@ class LagerMultiplexer:
     def mux(self, common, channel):
         mult, mult_common = CHANNELS[common]
         print(f"Muxing input {channel} to output {common}")
-        channel = MULT_MAP_INPUTS[channel]
-        # print(f"\tActually mult {mult}, input {channel} output {mult_common}")
-        multiplexers[mult].mux(mult_common, channel)
+        if channel is None:
+            multiplexers[mult].clear()
+        else:
+            channel = MULT_MAP_INPUTS[channel]
+            # print(f"\tActually mult {mult}, input {channel} output {mult_common}")
+            multiplexers[mult].mux(mult_common, channel)
 
     def get_mux(self, common):
         # TODO fix
