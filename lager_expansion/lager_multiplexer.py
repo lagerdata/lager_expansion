@@ -14,9 +14,10 @@ class LagerMultiplexer:
             multiplexers.append(MAX14661(self.i2c, addr))
 
     def validate_mux(self, inp, out):
-        inp = int(inp)
-        if inp < 1 or inp > 16:
-            raise ValueError
+        if inp is not None:
+            inp = int(inp)
+            if inp < 1 or inp > 16:
+                raise ValueError
 
         if out.upper() not in CHANNELS.keys():
             raise ValueError
