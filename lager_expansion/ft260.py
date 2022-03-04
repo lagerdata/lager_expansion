@@ -1,6 +1,6 @@
 from enum import Enum
 import hid
-
+import time
 FT260_Vid = 0x0403
 FT260_Pid = 0x6030
 
@@ -33,6 +33,9 @@ class FT260:
         print("I2C Status")
         rts = self.device.get_feature_report( report_num=0xC0, max_length = 255)
         print( [ "%02x" % (each) for each in rts ])
+
+    def i2c_reset(self):
+        self.device.send_feature_report([0xA1, 0x20])
 
     def write(self, address, flag, data):
         rid = 0xD0

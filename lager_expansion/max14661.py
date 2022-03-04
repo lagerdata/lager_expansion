@@ -12,6 +12,7 @@ MAX14661_SHDW3      = 0x13
 MAX14661_CMD_A      = 0x14
 MAX14661_CMD_B      = 0x15
 
+
 class MAX14661:
     def __init__(self, i2c, address):
         self.i2c = i2c
@@ -20,57 +21,37 @@ class MAX14661:
         self.mux_a_state = 0x10
         self.mux_b_state = 0x10
 
+        self.mux_states = [0, 0]
+
     def begin(self):
         pass
 
-    def mux_a(self, channel):
-        if channel <= 0 or channel > 16:
-            channel = 0x10 # Disable all switches
-        else:
-            channel -= 1
-        
-        print(f"Writing to {hex(self.address)} {hex(MAX14661_CMD_A)} {hex(channel)}")
-        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, channel, self.mux_b_state])
-        self.mux_a_state = channel
-
-    def mux_b(self, channel):
-        if channel <= 0 or channel > 16:
-            channel = 0x10 # Disable all switches
-        else:
-            channel -= 1
-        print(f"Writing to {hex(self.address)} {hex(MAX14661_CMD_B)} {hex(channel)}")
-        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, self.mux_a_state, channel])
-        self.mux_b_state = channel
-
     def mux(self, common, channel):
+        if channel <= 0 or channel > 16:
+            raise AttributeError("Channel must be between 1-16")
+        
         if common == 'A':
-            self.mux_a(channel)
+            other_reg = 0x10 if self.mux_states[1] == 0 else self.mux_states[1] - 1
+            print(f"other: {other_reg}")
+
+            cmd = [MAX14661_CMD_A, channel - 1, other_reg]
+            self.mux_states[0] = channel
+        
         elif common == 'B':
-            self.mux_b(channel)
+            other_reg = 0x10 if self.mux_states[0] == 0 else self.mux_states[0] - 1
+            print(f"other: {other_reg}")
+            cmd = [MAX14661_CMD_A, other_reg, channel - 1]
+            self.mux_states[1] = channel
+
+        self.i2c.write(self.address, Flags.FLAG_START_STOP, cmd)
 
     def clear(self):
         self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, 0x10, 0x10])
 
-    def get_mux_a(self):
-        mux_a = self.i2c.read(self.address, MAX14661_CMD_A, 1)
-        return mux_a
-
-    def get_mux_b(self):
-        mux_b = self.i2c.read(self.address, MAX14661_CMD_B, 1)
-        return  mux_b
-
-    def get_mux(self, common):
+    def get_state(self, common):
         if common == 'A':
-            return self.get_mux_a()
+            return self.mux_states[0]
         elif common == 'B':
-            return self.get_mux_b()
-
-    def test(self):
-
-        # self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_DIR0, 0x02])
-
-        dir0 = self.i2c.read(self.address, MAX14661_DIR0, 1)
-        dir1 = self.i2c.read(self.address, MAX14661_DIR1, 1)
-        dir2 = self.i2c.read(self.address, MAX14661_DIR2, 1)
-        dir3 = self.i2c.read(self.address, MAX14661_DIR3, 1)
-        print(f"DIR0: {hex(dir0[0])} DIR1: {hex(dir1[0])} DIR2: {hex(dir2[0])} DIR3: {hex(dir3[0])}")
+            return self.mux_states[1]
+        raise AttributeError("Common must be A or B")
+                

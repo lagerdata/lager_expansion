@@ -9,7 +9,7 @@ MULT_MAP_INPUTS = [-1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, -1
 class LagerMultiplexer:
     def __init__(self):
         self.i2c = FT260(debug=False)
-        
+
         for addr in ADDRS:
             multiplexers.append(MAX14661(self.i2c, addr))
 
@@ -31,9 +31,8 @@ class LagerMultiplexer:
         multiplexers[mult].mux(mult_common, channel)
 
     def get_mux(self, common):
-        # TODO fix
         mult, mult_common = CHANNELS[common]
-        return multiplexers[mult].get_mux(mult_common)
+        return multiplexers[mult].get_state(mult_common)
 
     def get_mults(self):
         return multiplexers
@@ -47,4 +46,5 @@ class LagerMultiplexer:
 
     def close(self):
         self.i2c.close()
+
 
