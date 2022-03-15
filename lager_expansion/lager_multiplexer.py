@@ -28,7 +28,7 @@ class LagerMultiplexer:
         mult, mult_common = CHANNELS[common]
         print(f"Muxing input {channel} to output {common}")
         if channel is None:
-            multiplexers[mult].clear()
+            multiplexers[mult].clear(mult_common)
         else:
             channel = MULT_MAP_INPUTS[channel]
             # print(f"\tActually mult {mult}, input {channel} output {mult_common}")
