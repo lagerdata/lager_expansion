@@ -41,12 +41,14 @@ class LagerMultiplexer:
     def get_mults(self):
         return multiplexers
 
-    def clear_mux(self, mux):
-        multiplexers[mux].clear()
+    def clear_mux(self, common):
+        mult, mult_common = CHANNELS[common]
+        multiplexers[mult].clear(mult_common)
 
     def clear_all(self):
         for mux in multiplexers:
-            mux.clear()
+            mux.clear('A')
+            mux.clear('B')
 
     def close(self):
         self.i2c.close()

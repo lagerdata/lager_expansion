@@ -17,10 +17,6 @@ class MAX14661:
     def __init__(self, i2c, address):
         self.i2c = i2c
         self.address = address
-
-        self.mux_a_state = 0x10
-        self.mux_b_state = 0x10
-
         self.mux_states = [0, 0]
 
     def begin(self):
@@ -32,21 +28,28 @@ class MAX14661:
         
         if common == 'A':
             other_reg = 0x10 if self.mux_states[1] == 0 else self.mux_states[1] - 1
-            print(f"other: {other_reg}")
-
             cmd = [MAX14661_CMD_A, channel - 1, other_reg]
             self.mux_states[0] = channel
         
         elif common == 'B':
             other_reg = 0x10 if self.mux_states[0] == 0 else self.mux_states[0] - 1
-            print(f"other: {other_reg}")
             cmd = [MAX14661_CMD_A, other_reg, channel - 1]
             self.mux_states[1] = channel
 
         self.i2c.write(self.address, Flags.FLAG_START_STOP, cmd)
 
-    def clear(self):
-        self.i2c.write(self.address, Flags.FLAG_START_STOP, [MAX14661_CMD_A, 0x10, 0x10])
+    def clear(self, common):
+        if common == 'A':
+            other_reg = 0x10 if self.mux_states[1] == 0 else self.mux_states[1] - 1
+            cmd = [MAX14661_CMD_A, 0x10, other_reg]
+            self.mux_states[0] = 0
+        
+        elif common == 'B':
+            other_reg = 0x10 if self.mux_states[0] == 0 else self.mux_states[0] - 1
+            cmd = [MAX14661_CMD_A, other_reg, 0x10]
+            self.mux_states[1] = 0
+
+        self.i2c.write(self.address, Flags.FLAG_START_STOP, cmd)
 
     def get_state(self, common):
         if common == 'A':
